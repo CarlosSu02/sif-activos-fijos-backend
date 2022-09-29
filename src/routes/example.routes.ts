@@ -1,10 +1,11 @@
 
 // Example Routes
 import { Router } from 'express';
-import { ping } from '../controllers/example.controller';
+import Controller from '../controllers/example.controller';
 
 const router = Router();
 
-router.get('/ping', ping);
+router.get('/ping', Controller.ping);
+router.get('/ping/:id', Controller.pingById);
 
 export default router;

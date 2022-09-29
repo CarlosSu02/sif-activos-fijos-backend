@@ -2,14 +2,14 @@
 // console.log('May te force be with you, always.');
 // Leer https://sequelize.org/docs/v6/getting-started/
 
-import app from './app';
+import App from './app';
 import 'dotenv/config';
 import { sequelize } from './database/connect_db';
 
 import './models/example.model';
 import { Test } from './models/example.model';
 
-const PORT = process.env.APP_PORT || 3000;
+// const PORT = process.env.APP_PORT || 3000;
 
 const main = async () => {
 
@@ -22,11 +22,7 @@ const main = async () => {
         // Lista los atributos de Test (tabla 'tests') definidos en Models 
         console.log(Test.prototype);
 
-        app.listen(PORT, () => {
-
-            console.log(`Server is running on port ${PORT}!`);
-
-        });
+        App.listen(process.env.APP_PORT as unknown as number || 3500);
         
     } catch (error) {
         
