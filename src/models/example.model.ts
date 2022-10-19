@@ -1,9 +1,11 @@
 
 // Example Models
-import { sequelize } from "../database/connect_db";
+import Connection from "../database/connection";
 import { DataTypes, Model } from 'sequelize';
 
-export const Test = sequelize.define(
+// const connection: Connection = new Connection();
+
+export const Test = new Connection().connection.define(
     'tests',
     {
         id: {
