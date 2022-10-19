@@ -30,9 +30,10 @@ class App {
     }
 
     db() {
+        
         this.connection = new Connection();
 
-        this.connection.connection.sync()
+        this.connection.connection.sync({ force: false })
             .then(() => {
         
                 console.log('Connection has been established successfully.')
