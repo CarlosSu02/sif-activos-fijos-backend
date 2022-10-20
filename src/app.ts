@@ -1,8 +1,8 @@
 
-import express from 'express';
+import express, { json } from 'express';
 import cors from 'cors';
-import routes from './routes/example.routes';
-import { json } from 'sequelize';
+import routesExamples from './routes/example.routes';
+// import { json } from 'sequelize';
 
 import Connection from './database/connection';
 
@@ -22,10 +22,10 @@ class App {
         
         this.express = express();
         this.db();
+        this.routes();
 
-        this.express.use(express.json());
+        this.express.use(json());
         this.express.use(cors());
-        this.express.use(routes);
         
     }
 
@@ -44,6 +44,12 @@ class App {
                 console.error('Unable to connect to the database: ', error);
             
             });
+
+    }
+
+    routes() {
+
+        this.express.use(routesExamples);
 
     }
 
