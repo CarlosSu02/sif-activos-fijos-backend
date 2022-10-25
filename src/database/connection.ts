@@ -2,7 +2,7 @@
 // Example to Connect db from PostgreSQL
 import { Sequelize } from 'sequelize-typescript';
 import 'dotenv/config';
-import { Category } from '../models/category';
+import { Category } from '../models/category.model';
 
 // console.log(process.env.PG_DATABASE, process.env.PG_USER, process.env.PG_PASSWORD, process.env.PG_HOST);
 

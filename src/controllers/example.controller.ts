@@ -1,6 +1,7 @@
 
 // Example Controllers
 import { Request, Response } from 'express';
+import { Category } from '../models/category.model';
 
 // export const ping = (req: Request, res: Response) => {
 

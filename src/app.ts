@@ -5,6 +5,7 @@ import routesExamples from './routes/example.routes';
 // import { json } from 'sequelize';
 
 import Connection from './database/connection';
+import categoriesRoutes from './routes/categories.routes';
 
 // const app = express();
 
@@ -21,12 +22,18 @@ class App {
     constructor() {
         
         this.express = express();
+        this.middlewares();
+
         this.db();
         this.routes();
 
+    }
+
+    middlewares() {
+
         this.express.use(json());
         this.express.use(cors());
-        
+
     }
 
     db() {
@@ -50,6 +57,7 @@ class App {
     routes() {
 
         this.express.use(routesExamples);
+        this.express.use('/api', categoriesRoutes.router);
 
     }
 
