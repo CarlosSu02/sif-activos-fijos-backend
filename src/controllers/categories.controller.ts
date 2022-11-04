@@ -1,58 +1,64 @@
 
 import { Request, Response } from "express";
 import { Category } from "../models/category.model";
+import categoriesService from "../services/categories.service";
 
 class CategoriesController {
 
-    getCategories = async (req: Request, res: Response) => {
+    public getCategories = async (req: Request, res: Response): Promise<Response> => {
 
         try {
+            
+            const pageFromReq: number = +req.query.page! - 1;
+            const size: number = 10;
 
-            const searchAllCategories = await Category.findAll({ attributes: ['id', 'name', 'description'], order: [['id', 'ASC']] });
+            let page: number = 0;
+            if (!Number.isNaN(pageFromReq) && pageFromReq > 0) page = pageFromReq;
 
-            (searchAllCategories.length !== 0) ? res.status(200).json(searchAllCategories) : res.status(404).json('There are no categories added!');
+            const categories = await categoriesService.getCategories(page, size);
+
+            return res.status(200).json(categories);
             
         } catch (error) {
             
-            (error instanceof Error) ? res.send(500).send(error.message) : res.status(500).send(String(error));
+            return (error instanceof Error) ? res.status(404).send(error.message) : res.status(404).send(String(error));
 
         }
 
     };
 
-    getCategoryById = async (req: Request, res: Response) => {
+    public getCategoryById = async (req: Request, res: Response) => {
 
         try {
 
             const { id } = req.params;
 
-            const category = await Category.findOne({ attributes: ['name', 'description'],
-                                                      where: { id }});
+            const category = await categoriesService.getCategoryById(+id);
 
-            (category !== null) ? res.status(200).json(category) : res.status(404).json('Category is not exists!');
+            res.status(200).json(category);
 
         } catch (error) { 
 
-            (error instanceof Error) ? res.send(500).send(error.message) : res.status(500).send(String(error));
+            (error instanceof Error) ? res.status(404).send(error.message) : res.status(404).send(String(error));
 
         }
 
     };
 
-    createCategory = async (req: Request, res: Response) => {
+    public createCategory = async (req: Request, res: Response) => {
 
         try {
 
-            const { name, description } = req.body;
+            const category = await categoriesService.validationCategory(req.body);
 
-            if(name === '' || typeof name !== 'string') throw new Error('Name is not valid!');
+            // if (typeof category === 'string') throw new Error(category);
 
             const newCategory = await Category.create({
-                name,
-                description
+                name: category.name,
+                description: category.description
             });
 
-            console.log('?', newCategory);
+            // console.log('?', newCategory);
 
             res.status(201).json(newCategory);
             
@@ -64,19 +70,22 @@ class CategoriesController {
 
     };
 
-    updateCategory = async (req: Request, res: Response) => {
+    public updateCategory = async (req: Request, res: Response) => {
 
         try {
 
             const { id } = req.params;
 
-            const category = await Category.findOne({ attributes: ['id', 'name', 'description'], 
-                                                      where: { id } });
+            const category = await categoriesService.getCategoryById(+id);
 
-            if(!category) throw new Error('Id is not exists!');
+            // if(!category) throw new Error('Id is not exists!');
             // if(name === '' || typeof name !== 'string') throw new Error('Name is not valid!');
 
-            category.set(req.body);
+            const validationCategory = await categoriesService.validationCategory(req.body);
+
+            // if (typeof validationCategory === 'string') throw new Error(validationCategory);
+
+            category.set(validationCategory);
             await category.save();
 
             res.status(202).json(category);
@@ -89,15 +98,15 @@ class CategoriesController {
 
     };
 
-    deleteCategory = async (req: Request, res: Response) => {
+    public deleteCategory = async (req: Request, res: Response) => {
 
         try {
 
             const { id } = req.params;
 
-            const existsCategory = await Category.findByPk(id);
+            const existsCategory = await categoriesService.getCategoryById(+id);
 
-            if(!existsCategory) throw new Error('Category is not exists!');
+            // if(!existsCategory) throw new Error('Category is not exists!');
 
             await Category.destroy({ where: { id } });
 
